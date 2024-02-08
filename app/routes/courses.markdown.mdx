@@ -1,13 +1,11 @@
 ---
 meta:
-  - title: My First Post
+  - title: Markdown with remix
   - name: description
     content: Isn't this awesome?
 headers:
   Cache-Control: no-cache
 ---
-
-
 
 # Remix config
 
@@ -27,3 +25,22 @@ export default {
 
 ```
 
+# Root
+
+```ts
+import styles from "highlight.js/styles/night-owl.css";
+import hljs from "highlight.js/lib/core";
+import javascript from "highlight.js/lib/languages/javascript";
+import Navbar from "../src/components/Navbar";
+
+// Then register the languages you need
+hljs.registerLanguage("javascript", javascript);
+
+export const links: LinksFunction = () => [
+  ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
+  {
+    rel: "stylesheet",
+    href: styles,
+  },
+];
+```
