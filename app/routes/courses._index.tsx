@@ -6,7 +6,7 @@ export default function Courses() {
       <h1>Courses</h1>
       <p>Welcome to the courses page</p>
 
-      <Link to={"/courses/rules"}>Rules</Link>
+      <Link to={"/courses/internal-rules"}>Rules</Link>
     </div>
   );
 }

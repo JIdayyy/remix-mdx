@@ -1,0 +1,1246 @@
+---
+meta:
+  - title: Internal rules
+  - name: description
+    content: Isn't this awesome?
+headers:
+  Cache-Control: no-cache
+---
+
+# Code conventions
+
+## General
+
+### Keep the project structure clean and organized
+```typescript
+src/
+    components/
+        header/
+            index.tsx
+            Icon.tsx
+            Link.tsx
+        footer/
+            index.tsx
+            Icon.tsx
+            Link.tsx
+    hooks/
+        index.ts
+        useForm.ts
+    pages/
+        index.ts
+        Home.tsx
+        Dashboard.tsx
+    types/
+        index.ts
+        user.ts
+    utils/
+        index.ts
+        form.ts
+```
+
+### Keep components/files small and focused
+Avoid having huge components or files that do too much. Split them into smaller components or files. A component with more than 200 lines of code is a good candidate for splitting.
+
+### Atomic design
+Use atomic design principles to organize your components. Atomic design is a methodology for creating design systems. It is based on the idea that you can break down your design into smaller parts, which are easier to manage and maintain.
+
+![Atomic design](https://assets-global.website-files.com/64964096860a8ebaefc07900/6529a1f743bbdb2c556d5f21_gif.gif)
+
+#### Atoms
+Atoms are the basic building blocks of matter. Applied to web interfaces, atoms are our HTML tags, such as a form label, an input or a button.
+```typescript
+// src/components/atoms/Button.tsx
+const Button = ({ children }) => {
+    return (
+        <button>
+            {children}
+        </button>
+    );
+}
+```
+
+#### Molecules
+Molecules are groups of atoms bonded together and are the smallest fundamental units of a compound. These molecules take on their own properties and serve as the backbone of our design systems.
+```typescript
+// src/components/molecules/FormField.tsx
+const FormField = ({ label, input }) => {
+    return (
+        <div>
+            <label>{label}</label>
+            {input}
+        </div>
+    );
+}
+```
+
+#### Organisms
+Organisms are groups of molecules joined together to form a relatively complex, distinct section of an interface.
+```typescript
+// src/components/organisms/Form.tsx
+const Form = ({ fields }) => {
+    return (
+        <form>
+            {fields.map(field => <FormField key={field.name} {...field} />)}
+        </form>
+    );
+}
+```
+
+#### Templates
+Templates are page-level objects that place components into a layout and articulate the design’s underlying content structure.
+```typescript
+// src/components/templates/Home.tsx
+const Home = () => {
+    return (
+        <div>
+            <Banner />
+            <Form />
+            <Content />
+        </div>
+    );
+}
+```
+
+#### Pages
+Pages are specific instances of templates that show what a UI looks like with real representative content in place.
+```typescript
+// src/pages/Home.tsx
+const Home = () => {
+    return (
+        <Header />
+        <body>
+            <HomeTemplate />
+        </body>
+    );
+}
+```
+
+### Keep a maximum of files by folder
+Avoid having more than 10 files in a folder. If you have more than 7 files, consider splitting them into subfolders.
+
+### Use camelCase for folder and non-component file names and PascalCase for component file names
+```typescript
+src/utils/form.ts
+src/hooks/useForm.ts
+src/components/banners/edit/Form.tsx
+```
+
+### Use PascalCase in components, interfaces, or type aliases
+```typescript
+// React component
+const BannersEditForm = () => {
+  ...
+}
+
+// Typescript interface
+interface TodoItem {
+  id: number;
+  name: string;
+  value: string;
+}
+
+// Typescript type alias
+type TodoList = TodoItem[];
+```
+
+### Use camelCase for JavaScript data types like variables, arrays, objects, functions, etc.
+```typescript
+const getLastDigit = () => { ... }
+
+const userTypes = [ ... ]
+```
+
+### Use descriptive variable names
+```typescript
+// ❌ Avoid single letter names
+const n = 'Max';
+// ✅
+const name = 'Max';
+
+// ❌ Avoid abbreviations
+const sof = 'Sunday';
+// ✅
+const startOfWeek = 'Sunday';
+
+// ❌ Avoid meaningless names
+const foo = false;
+// ✅
+const appInit = false;
+
+// ❌ Avoid using other languages
+const messageDeBienvenue = "Hello";
+// ✅
+const welcomeMessage = "Hello";
+```
+
+### Use uppercase snake case for constants, enums, and environment variables
+```typescript
+const SOME_CONSTANT = "something";
+const ResponseStatus = {
+  OK: 200,
+  NOT_FOUND: 404
+};
+const API_URL = "https://api.com";
+```
+
+### Choose wisely between singular and plural names
+```typescript
+const fetchConversation = () => {
+    // Fetch single conversation.
+}
+
+const fetchConversations = () => {
+    // Fetch multiple conversations.
+}
+
+// Use singular name for a single conversation
+const conversation = { /*Conversation Details*/ }
+
+// Use plural name for multiple conversation
+const conversations = [
+    { /*Conversation Details*/ },
+    { /*Conversation Details*/ }
+]
+```
+
+### Use `const` for all variables unless you know you will need to reassign the value
+```typescript
+const user = { name: 'John', age: 25 };
+```
+
+### Use `let` only when you need to reassign the value
+```
+let user = { name: 'John', age: 25 };
+user = { name: 'Jane', age: 30 };
+```
+
+### Use arrow functions
+```typescript
+const getLastDigit = () => { ... }
+```
+
+### Use `===` and `!==` instead of `==` and `!=`
+```typescript
+if (user.age !== 25) { ... }
+```
+
+### Use `...` for rest parameters instead of `arguments`
+```typescript
+const sum = (...numbers: number[]) => {
+  return numbers.reduce((acc, number) => acc + number, 0);
+}
+```
+
+### Comment only when necessary
+```typescript
+// ❌
+// This function returns the sum of two numbers
+const sum = (a: number, b: number) => {
+  return a + b;
+}
+
+// ✅
+const sum = (a: number, b: number) => {
+  return a + b;
+}
+```
+
+### All files related to a feature should be in the same folder
+```typescript
+src/components/header/index.tsx
+src/components/header/Icon.tsx
+src/components/header/Link.tsx
+```
+
+### Avoid using `any` type
+```typescript
+// ❌
+const someFunction = (value: any) => {
+  return value;
+}
+
+// ✅
+const someFunction = (value: ValueType) => {
+  return value;
+}
+```
+
+### Use `@pytheas/prettier-config` for code formatting
+```bash
+npm i -D @pytheas/prettier-config
+```
+
+### Write meaningful commit messages using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+```bash
+git commit -m "feat: add new feature"
+```
+
+### Write a useful README.md file for every project
+```markdown
+# Project Name
+A short description of the project
+
+## Installation
+
+## Usage
+
+## Project structure
+
+## Technologies
+```
+
+
+## Frontend
+
+### Use typescript barrels for exporting multiple components, hooks, etc.
+```typescript
+// src/components/index.ts
+export { default as BannersEditForm } from './banners/edit/Form';
+export { default as BannersList } from './banners/List';
+
+// src/hooks/index.ts
+export { default as useBanners } from './useBanners';
+export { default as useForm } from './useForm';
+
+// src/pages/index.ts
+import { BannersEditForm, BannersList } from '../components';
+import { useBanners, useForm } from '../hooks';
+```
+
+### Use `index.ts` for exporting main component of a folder
+```typescript
+// src/components/header/index.ts
+import Icon from './Icon';
+import Link from './Link';
+
+const Header = () => {
+  return (
+    <div>
+      <Icon />
+      <Link />
+    </div>
+  );
+}
+
+export default Header;
+```
+
+```typescript
+// src/app.tsx
+import Header from './components/header';
+
+const App = () => {
+  return (
+    <div>
+      <Header />
+    </div>
+  );
+}
+```
+
+### React component structure
+```typescript
+// 1. Imports - Prefer destructuring imports to minimize writen code
+import React, { PropsWithChildren, useState, useEffect } from "react";
+
+// 2. Types
+type ComponentProps = {
+    someProperty: string;
+};
+
+// 4. Additional variables
+const SOME_CONSTANT = "something";
+
+// 5. Component - Use destructuring for props and state
+const Component = ({ someProperty }: PropsWithChildren<ComponentProps>) => {
+    // 5.1 Definitions 
+    const [state, setState] = useState(true);
+    const { something } = useSomething();
+
+    // 5.2 Functions
+    const handleToggleState = () => {
+        setState(!state);
+    }
+
+    // 5.3 Effects
+    // ❌
+    React.useEffect(() => {
+        // ...
+    }, []);
+
+    // ✅
+    useEffect(() => {
+        // ...
+    }, []);
+
+    return (
+        <div>
+            // ...
+        </div>
+    );
+}
+
+// 6. Exports
+export default Component;
+```
+
+### Use `ReactNode` for children props
+```typescript
+type ComponentProps = {
+    children: ReactNode;
+};
+```
+
+### Use `React.FC` for functional components
+```typescript
+const Component: React.FC<ComponentProps> = ({ children }) => {
+    return (
+        <div>
+            {children}
+        </div>
+    );
+}
+```
+
+### Separate function from the JSX if it takes more than 1 line
+```typescript
+// ❌
+<button
+  onClick={() => {
+    setState(!state);
+    resetForm();
+    reloadData();
+  }}
+/>
+
+// ✅
+<button onClick={() => setState(!state)} />
+
+// ✅
+const handleButtonClick = () => {
+  setState(!state);
+  resetForm();
+  reloadData();
+}
+
+<button onClick={handleButtonClick} />
+```
+
+### Use fragments for multiple children
+```typescript
+// ❌
+const Component = () => {
+    return (
+        <div>
+            <h1>Title</h1>
+            <p>Content</p>
+        </div>
+    );
+}
+
+// ✅
+const Component = () => {
+    return (
+        <>
+            <h1>Title</h1>
+            <p>Content</p>
+        </>
+    );
+}
+```
+
+### Prefer destructuring properties
+```typescript
+// ❌
+const Component = (props) => {
+    return (
+        <div>
+            <h1>{props.title}</h1>
+            <p>{props.content}</p>
+        </div>
+    );
+}
+
+// ✅
+const Component = ({ title, content }) => {
+    return (
+        <div>
+            <h1>{title}</h1>
+            <p>{content}</p>
+        </div>
+    );
+}
+```
+
+### Avoid passing props to nested components, use context or custom hooks instead
+```typescript
+// ❌
+const ParentComponent = ({myProp}) => {
+    return (
+        <div>
+            <ChildComponent myProp={myProp} />
+        </div>
+    );
+}
+
+const ChildComponent = ({myProp}) => {
+    return (
+        <div>
+            <NestChildComponent myProp={myProp} />
+        </div>
+    );
+}
+
+const NestChildComponent = ({myProp}) => {
+    return (
+        <div>
+            <p>{myProp}</p>
+        </div>
+    );
+}
+
+// ✅
+const MyContext = React.createContext();
+
+const ParentComponent = ({myProp}) => {
+    return (
+        <MyContext.Provider value={myProp}>
+            <ChildComponent />
+        </MyContext.Provider>
+    );
+}
+
+const ChildComponent = () => {
+    return (
+        <div>
+            <NestChildComponent />
+        </div>
+    );
+}
+
+const NestChildComponent = () => {
+    const myProp = useContext(MyContext);
+    return (
+        <div>
+            <p>{myProp}</p>
+        </div>
+    );
+}
+```
+
+### Avoid using Query and Mutation components from `@apollo/react-components`, use `useQuery` and `useMutation` hooks instead
+```typescript
+// ❌
+const Component = () => {
+    return (
+        <Query query={GET_USERS}>
+            {({ loading, error, data }) => {
+                if (loading) return <p>Loading...</p>;
+                if (error) return <p>Error</p>;
+                return (
+                    <ul>
+                        {data.users.map(user => (
+                            <li key={user.id}>{user.name}</li>
+                        ))}
+                    </ul>
+                );
+            }}
+        </Query>
+    );
+}
+
+// ✅
+const Component = () => {
+    const { loading, error, data } = useQuery(GET_USERS);
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error</p>;
+    return (
+        <ul>
+            {data.users.map(user => (
+                <li key={user.id}>{user.name}</li>
+            ))}
+        </ul>
+    );
+}
+```
+
+### Avoid using HOCs, use custom hooks instead
+```typescript
+// ❌
+const withUser = (Component) => {
+    const user = useUser();
+    return <Component user={user} />;
+}
+
+const Component = ({ user }) => {
+    return (
+        <div>
+            <p>{user.name}</p>
+        </div>
+    );
+}
+
+const ComponentWithUser = withUser(Component);
+
+// ✅
+const useUser = () => {
+    return { name: 'John' };
+}
+
+const Component = () => {
+    const user = useUser();
+    return (
+        <div>
+            <p>{user.name}</p>
+        </div>
+    );
+}
+```
+
+### Avoid huge components
+```typescript
+// ❌
+const SomeSection = ({ isEditable, value }) => {
+  if (isEditable) {
+    return (
+      <Section>
+        <Title>Edit this content</Title>
+        <Content>{value}</Content>
+        <Button>Clear content</Button>
+      </Section>
+    );
+  }
+
+  return (
+    <Section>
+      <Title>Read this content</Title>
+      <Content>{value}</Content>
+    </Section>
+  );
+};
+
+// ✅
+const EditableSection = ({ value }) => {
+  return (
+    <Section>
+      <Title>Edit this content</Title>
+      <Content>{value}</Content>
+      <Button>Clear content</Button>
+    </Section>
+  );
+};
+
+const DetailSection = ({ value }) => {
+  return (
+    <Section>
+      <Title>Read this content</Title>
+      <Content>{value}</Content>
+    </Section>
+  );
+};
+
+const SomeSection = ({ isEditable, value }) => {
+  return isEditable ? (
+    <EditableSection value={value} />
+  ) : (
+    <DetailSection value={value} />
+  );
+};
+```
+
+### Use composition pattern
+```typescript
+// ❌
+const Header = () => {
+  return (
+    <header>
+      <Logo />
+      <Actions>
+        <Link to="/dashboard">Go to dashboard</Link>
+      </Actions>
+    </header>
+  );
+};
+
+const HomePage = () => (
+  <>
+    <Header />
+    <OtherHomeStuff />
+  </>
+);
+
+const DashboardPage = () => (
+  <>
+    <Header />
+    <OtherDashboardStuff />
+  </>
+);
+
+// ✅
+const Header = ({ children }) => (
+  <header>
+    <Logo />
+    <Actions>
+      {children}
+    </Actions>
+  </header>
+);
+
+const HomePage = () => (
+  <>
+    <Header>
+      <Link to="/dashboard">Go to dashboard</Link>
+    </Header>
+    <OtherHomeStuff />
+  </>
+);
+
+const DashboardPage = () => (
+  <>
+    <Header>
+      <Link to="/events/new">Create event</Link>
+    </Header>
+    <OtherDashboardStuff />
+  </>
+);
+```
+
+### Avoid using too much `useEffect` in a single component, use custom hooks instead
+```typescript
+// ❌
+const Component = () => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const response = await fetch('/user');
+      const data = await response.json();
+      setUser(data);
+      setLoading(false);
+    };
+    fetchUser();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      document.title = user.name;
+    }
+  }, [user]);
+
+  return (
+    <div>
+      {loading ? <p>Loading...</p> : <p>{user.name}</p>}
+    </div>
+  );
+};
+
+// ✅
+const useUser = () => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const response = await fetch('/user');
+      const data = await response.json();
+      setUser(data);
+      setLoading(false);
+    };
+    fetchUser();
+  }, []);
+
+  return { user, loading };
+};
+
+const useDocumentTitle = (title) => {
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
+};
+
+const Component = () => {
+  const { user, loading } = useUser();
+  useDocumentTitle(user?.name);
+  return (
+    <div>
+      {loading ? <p>Loading...</p> : <p>{user.name}</p>}
+    </div>
+  );
+};
+```
+
+### Use custom hooks for reusable logic
+```typescript
+// ❌
+const ScreenDimensions = () => {
+    const [windowSize, setWindowSize] = useState({
+        width: undefined,
+        height: undefined
+    });
+
+    useEffect(() => {
+        function handleResize() {
+            setWindowSize({
+                width: window.innerWidth,
+                height: window.innerHeight
+            });
+        }
+
+        window.addEventListener("resize", handleResize);
+        handleResize();
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    return (
+        <>
+            <p>Current screen width: {windowSize.width}</p>
+    <p>Current screen height: {windowSize.height}</p>
+    </>
+);
+};
+
+// ✅
+const useWindowSize = () => {
+    const [windowSize, setWindowSize] = useState({
+        width: undefined,
+        height: undefined
+    });
+
+    useEffect(() => {
+        function handleResize() {
+            setWindowSize({
+                width: window.innerWidth,
+                height: window.innerHeight
+            });
+        }
+
+        window.addEventListener("resize", handleResize);
+        handleResize();
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
+    return windowSize;
+};
+
+const ScreenDimensions = () => {
+    const windowSize = useWindowSize();
+
+    return (
+        <>
+            <p>Current screen width: {windowSize.width}</p>
+            <p>Current screen height: {windowSize.height}</p>
+            </>
+        );
+};
+```
+
+### Custom hooks should start with `use`
+```typescript
+const useWindowSize = () => {
+    ...
+}
+```
+
+### Group the state whenever possible
+```typescript
+// ❌
+const [name, setName] = useState('');
+const [age, setAge] = useState(0);
+const [email, setEmail] = useState('');
+
+// ✅
+const [user, setUser] = useState({
+  name: '',
+  age: 0,
+  email: ''
+});
+```
+
+### Use shorthand for boolean props
+```typescript
+// ❌
+<Component isEditable={true} />
+
+// ✅
+<Component isEditable />
+```
+
+### Avoid curly braces for string props
+```typescript
+// ❌
+<Component title={'Title'} />
+
+// ✅
+<Component title="Title" />
+```
+
+### Use constants or enums for string values
+```typescript
+// ❌
+const status = 'active';
+
+// ✅
+const status = {
+  active: 'active',
+  inactive: 'inactive'
+};
+```
+
+### Use `null` for empty JSX elements
+```typescript
+// ❌
+const Component = () => {
+  return (
+    <div>
+      {false && <p>Content</p>}
+    </div>
+  );
+}
+
+// ✅
+const Component = () => {
+  return (
+    <div>
+      {false ? <p>Content</p> : null}
+    </div>
+  );
+}
+```
+
+### Avoid long list of fucntion arguments
+```typescript
+// ❌
+const handleButtonClick = (event, id, name, value, isEditable, isDeletable) => {
+  // ...
+}
+
+// ✅
+const handleButtonClick = (event, { id, name, value, isEditable, isDeletable }) => {
+  // ...
+}
+```
+
+### Prefer using template literals for string concatenation
+```typescript
+// ❌
+const message = 'Hello, ' + name + '!';
+
+// ✅
+const message = `Hello, ${name}!`;
+```
+
+
+## SOLID principles
+
+### Single Responsibility Principle
+`A component or function should have only one reason to change.`
+
+Every function/module/component should have responsibility over a single part of the functionality. That responsibility should be entirely encapsulated by the function/module/component.
+
+To ensure our components do one thing internally, we can:
+- break large components that do too much into smaller components
+- extract code unrelated to the main component functionality into separate utility functions
+- encapsulate connected functionality into custom hooks
+
+```typescript
+// ❌
+
+const ActiveUsersList = () => {
+    const [users, setUsers] = useState([])
+    useEffect(() => {
+        const loadUsers = async () => {
+            const response = await fetch('/some-api')
+            const data = await response.json()
+            setUsers(data)
+        }
+        loadUsers()
+    }, [])
+    const weekAgo = new Date();
+    weekAgo.setDate(weekAgo.getDate() - 7);
+    return (
+        <ul>
+            {users.filter(user => !user.isBanned && user.lastActivityAt >= weekAgo).map(user =>
+                <li key={user.id}>
+                    <img src={user.avatarUrl} />
+                    <p>{user.fullName}</p>
+                    <small>{user.role}</small>
+                </li>
+            )}
+        </ul>
+    )
+}
+
+// ✅
+// Custom hook for fetching users
+const useUsers = () => {
+    const [users, setUsers] = useState([])
+    useEffect(() => {
+        const loadUsers = async () => {
+            const response = await fetch('/some-api')
+            const data = await response.json()
+            setUsers(data)
+        }
+        loadUsers()
+    }, [])
+    return { users }
+}
+
+// Utility function for getting only active users
+const getOnlyActive = (users) => {
+    const weekAgo = new Date()
+    weekAgo.setDate(weekAgo.getDate() - 7)
+    return users.filter(user => !user.isBanned && user.lastActivityAt >= weekAgo)
+}
+
+// Custom hook for getting only active users
+const useActiveUsers = () => {
+    const { users } = useUsers()
+    const activeUsers = useMemo(() => {
+        return getOnlyActive(users)
+    }, [users])
+    return { activeUsers }
+}
+
+// User item component
+const UserItem = ({ user }) => {
+    return (
+        <li>
+            <img src={user.avatarUrl} />
+            <p>{user.fullName}</p>
+            <small>{user.role}</small>
+        </li>
+    )
+}
+
+// Active users list component
+const ActiveUsersList = () => {
+    const { activeUsers } = useActiveUsers()
+    return (
+        <ul>
+            {activeUsers.map(user =>
+                    <UserItem key={user.id} user={user} />
+            )}
+        </ul>
+    )
+}
+```
+
+### Open/Closed Principle
+`Software entities should be open for extension but closed for modification.`
+
+A module/component should be open for extension but closed for modification. This means that we should be able to add new functionality without changing the existing code.
+Take the following example:
+```typescript
+const Header = () => {
+    const { pathname } = useRouter()
+    return (
+        <header>
+            <Logo />
+                <Actions>
+                    {pathname === '/dashboard' && <Link to="/events/new">Create event</Link>}
+                    {pathname === '/' && <Link to="/dashboard">Go to dashboard</Link>}
+                </Actions>
+        </header>
+    )
+    }
+    const HomePage = () => (
+        <>
+            <Header />
+            <OtherHomeStuff />
+        </>
+    )
+    const DashboardPage = () => (
+        <>
+            <Header />
+            <OtherDashboardStuff />
+        </>
+    )
+```
+
+Here we render links to different page components depending on the current page we’re at. It’s easy to realize that this implementation is bad if we think about what will happen when we start adding more pages. Every time a new page is created, we’ll need to go back to our Header component and adjust its implementation to make sure it knows which action link to render. Such an approach makes our Header component fragile and tightly coupled to the context in which it’s used, and it goes against the open-closed principle.
+
+To fix this problem, we can use component composition. Our Header component doesn’t need to concern itself with what it will render inside, and instead, it can delegate this responsibility to the components that will use it using children prop:
+```typescript
+
+const Header = ({ children }) => (
+    <header>
+        <Logo />
+        <Actions>
+            {children}
+        </Actions>
+    </header>
+)
+const HomePage = () => (
+    <>
+        <Header>
+            <Link to="/dashboard">Go to dashboard</Link>
+        </Header>
+        <OtherHomeStuff />
+    </>
+)
+const DashboardPage = () => (
+    <>
+        <Header>
+            <Link to="/events/new">Create event</Link>
+        </Header>
+        <OtherDashboardStuff />
+    </>
+)
+```
+
+With this approach, we completely remove the variable logic that we had inside of the Header and now can use composition to put there literally anything we want without modifying the component itself. A good way of thinking about it is that we provide a placeholder in the component that we can plug into. And we’re not limited to one placeholder per component either - if we need to have multiple extension points (or if the children prop is already used for a different purpose), we can use any number of props instead. If we need to pass some context from the Header to components that use it, we can use the render props pattern. As you can see, composition can be very powerful.
+    
+Following the open-closed principle, we can reduce coupling between the components, and make them more extensible and reusable.
+
+### Liskov Substitution Principle
+`Subtypes must be substitutable for their base types without affecting the correctness of the program.`
+
+In React, the Liskov Substitution Principle (LSP) underscores the importance of allowing child components to seamlessly replace their parent components while maintaining the same interface and functionality. This enables developers to compose complex user interfaces by substituting components, promoting code reusability and maintainability.
+
+By adhering to LSP in React, developers create a hierarchy of interchangeable components. This means that base components and their derived counterparts can be swapped without affecting the application's core functionality, simplifying development, enhancing code readability, and facilitating better component behavior understanding. In essence, Liskov Substitution in React encourages the creation of a flexible and cohesive component structure for building robust and maintainable user interfaces.
+
+```typescript
+const DangerButton = () => {
+    return <div>Danger</div>;
+};
+```
+
+So we want to create a DangerButton component but a button functionality couldn't be replaced by a div so this violates the principle.
+
+What we should do instead is just return a button like this
+
+```typescript
+const DangerButton = () => {
+    return <button>Danger</button>;
+};
+```
+
+This looks better but it's not enough. We also need to inherit all the functionalities of the button itself.
+
+```typescript
+interface IDangerButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+    children: ReactNode
+    // Your extra props if you have
+}
+
+const DangerButton = ({ children, ...props }: IDangerButtonProps) => {
+    return <button {...props} className="danger">{children}</button>;
+};
+```
+
+Now we have inherited all of the attributes of the button and we pass the attributes to the new button. This way, any instance of DangerButton can still be used in place of an instance of Button without changing the program’s behavior and complying with the Liskov Substitution Principle.
+
+### Interface Segregation Principle
+`Clients should not be forced to depend on interfaces they don’t use.`
+
+In React, the Interface Segregation Principle (ISP) emphasizes the importance of creating precise and minimal interfaces for components. It encourages developers to design component interfaces that are tailored to specific needs, avoiding unnecessary bloat.
+
+This approach results in more modular, maintainable, and reusable code, as components become smaller and focused, promoting better readability and scalability in React applications. ISP encourages cleaner, efficient codebases by advocating for lean and specialized component interfaces.
+
+```typescript
+const Book = ({ book }) => {
+    return (
+        <div>
+            <img src={book.image} alt="Book image" /> 
+            <p>{book.title}</p> 
+            <p>{book.author}</p>
+        </div>
+    );
+};
+```
+
+We have a book component which only need few data from the book props which are image, title, and author. By giving it book as a props, we end up giving it more than the component actually need because the book props itself might contain data that the component doesn't need
+
+To mitigate this problem we can limit the props to only what the component need.
+
+```typescript
+const Book = ({ image, title, author }) => {
+    return (
+        <div>
+            <img src={image} alt="Book image" />
+            <p>{title}</p>
+            <p>{author}</p>
+        </div>
+    );
+};
+```
+
+By doing so, we are applying the ISP principle, thus avoiding clients of our component from depending on an interface they are not using.
+
+### Dependency Inversion Principle
+`High-level modules should not depend on low-level modules. Both should depend on abstractions.`
+
+Dependency Inversion in React involves ensuring that high-level components don't directly depend on low-level components. Instead, both should rely on abstractions, like props or context, to foster flexibility and maintainability. This promotes modularity, simplifies testing, and allows for easier code maintenance.
+
+Adhering to the Dependency Inversion Principle in React leads to a more scalable architecture with better separation of concerns. It simplifies unit testing by enabling easy mockup of low-level components, enhancing control and precision in testing high-level components.
+
+```typescript
+const CreateBookForm = () => {
+    const handleCreateBookForm = async (e: FormEvent<HTMLFormElement>) => {
+        try {
+            const formData = new FormData(e.currentTarget);
+            await axios.post("https://myapi.com/books", formData);
+        } catch (err) {
+            console.error(err.message);
+        }
+    };
+    
+    return (
+        <form onSubmit={handleCreateBookForm}>
+            <input name="title" />
+            <input name="author" />
+            <input name="bookType" />
+        </form>
+    );
+};
+```
+
+The component above shows a form for handling create book by rendering a form and send the submitted data to an api.
+
+Let's imagine if there's another form to edit the book with 100% same ui and differs only from logic. The dependency to the logic of sending data to the API is what makes the form unreusable, so we have to make a component that doesn't depend on a low-level module.
+
+```typescript
+const BookForm = ({ onSubmit }) => {
+    return (
+        <form onSubmit={onSubmit}>
+            <input name="title" />
+            <input name="author" />
+            <input name="bookType" />
+        </form>
+    );
+};
+```
+
+We have removed the dependency from the form and we can pass the logic through props.
+
+Now let's use the form!
+
+```typescript
+const CreateBookForm = () => {
+    const handleCreateBook = async (e: FormEvent<HTMLFormElement>) => {
+        try {
+            const formData = new FormData(e.currentTarget);
+            await axios.post("https://myapi.com/books", formData);
+        } catch (err) {
+            console.error(err.message);
+        }
+    };
+    return <BookForm onSubmit={handleCreateBook} />;
+};
+
+const EditBookForm = () => {
+    const handleEditBook = async (e: FormEvent<HTMLFormElement>) => {
+        try {
+            // Another logic
+        } catch (err) {
+            console.error(err.message);
+        }
+    };
+    return <BookForm onSubmit={handleEditBook} />;
+};
+```
+
+See now that we have implemented Dependency Inversion Principle, we have a great separation of concerns by abstracting the dependency
