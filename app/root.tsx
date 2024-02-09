@@ -9,19 +9,30 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import styles from "highlight.js/styles/night-owl.css";
+import stylesheet from "./tailwind.css";
 import hljs from "highlight.js/lib/core";
 import javascript from "highlight.js/lib/languages/javascript";
-import Navbar from "../src/components/Navbar";
+import Navbar from "./components/Navbar";
 
 // Then register the languages you need
 hljs.registerLanguage("javascript", javascript);
 
 export const links: LinksFunction = () => [
-  ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
+  ...(cssBundleHref
+    ? [
+        { rel: "stylesheet", href: cssBundleHref },
+        {
+          rel: "stylesheet",
+          href: styles,
+        },
+        { rel: "stylesheet", href: stylesheet },
+      ]
+    : []),
   {
     rel: "stylesheet",
     href: styles,
   },
+  { rel: "stylesheet", href: stylesheet },
 ];
 
 export default function App() {
@@ -34,7 +45,9 @@ export default function App() {
         <Links />
         <title>Welcome to Remix!</title>
       </head>
-      <body>
+      <body
+        className={"flex flex-col items-center align-middle justify-center"}
+      >
         <Navbar />
         <Outlet />
         <ScrollRestoration />
