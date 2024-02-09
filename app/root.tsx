@@ -46,7 +46,9 @@ export default function App() {
         <title>Welcome to Remix!</title>
       </head>
       <body
-        className={"flex flex-col items-center align-middle justify-center"}
+        className={
+          "flex dark flex-col items-center align-middle justify-center"
+        }
       >
         <Navbar />
         <Outlet />
